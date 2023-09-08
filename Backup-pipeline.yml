@@ -1,4 +1,4 @@
-trigger: 
+|trigger: 
 - main
 
 pool:
@@ -32,6 +32,9 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
             backendType: 'azurerm'
             backendServiceArm: 'terraform-aks-azurerm-svc-con'
+            backendAzureRmResourceGroupName: 'Capstonedemoniaz1'
+            backendAzureRmStorageAccountName: 'tstatestorageniaz'
+            backendAzureRmContainerName: 'tfstatefiles1'
             backendAzureRmKey: 'aks-demo-one'
             allowTelemetryCollection: false
 
