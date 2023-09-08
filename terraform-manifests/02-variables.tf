@@ -1,7 +1,6 @@
 # Define Input Variables
 # 1. Azure Location (CentralUS)
 # 2. Azure Resource Group Name 
-# 3. Azure AKS Environment Name (Dev, QA, Prod)
 
 # Azure Location
 variable "location" {
@@ -28,10 +27,10 @@ variable "resource_group_name" {
 # AKS Input Variables
 
 # SSH Public Key for Linux VMs
-variable "ssh_public_key" {
-  #default = "~/.ssh/aks-prod-sshkeys-terraform/aksprodsshkey.pub"
-  description = "This variable defines the SSH Public Key for Linux k8s Worker nodes"  
-}
+# variable "ssh_public_key" {
+#   #default = "~/.ssh/aks-prod-sshkeys-terraform/aksprodsshkey.pub"
+#   description = "This variable defines the SSH Public Key for Linux k8s Worker nodes"  
+# }
 
 # Windows Admin Username for k8s worker nodes
 variable "windows_admin_username" {

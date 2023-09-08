@@ -35,8 +35,6 @@ terraform {
   }  
 }
 
-
-
 # 2. Terraform Provider Block for AzureRM
 provider "azurerm" {
   features {
@@ -48,4 +46,3 @@ provider "azurerm" {
 resource "random_pet" "aksrandom" {
 
 }
-
