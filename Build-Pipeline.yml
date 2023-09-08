@@ -2,8 +2,7 @@
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
-trigger:
-- main
+
 
 pool:
   vmImage: ubuntu-latest
@@ -31,20 +30,23 @@ stages:
           artifact: 'terraform-manifests-out'
           publishLocation: 'pipeline'
 
-      - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+      - task: TerraformInstaller@0
+        displayName: Terraform Install
         inputs:
-          terraformVersion: 'latest'
+           terraformVersion: 'latest'
       
-      - task: TerraformTaskV4@4
+      - task: TerraformCLI@0
+        displayName: Terraform Init
         inputs:
-          provider: 'azurerm'
-          command: 'init'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-          backendServiceArm: 'terraform-aks-azurerm-svc-con'
-          backendAzureRmResourceGroupName: 'Capstonedemoniaz1'
-          backendAzureRmStorageAccountName: 'tstatestorageniaz'
-          backendAzureRmContainerName: 'tfstatefiles1'
-          backendAzureRmKey: 'aks-terraform.tfstate'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            backendType: 'azurerm'
+            backendServiceArm: 'terraform-aks-azurerm-svc-con'
+            backendAzureRmResourceGroupName: 'Capstonedemoniaz1'
+            backendAzureRmStorageAccountName: 'tstatestorageniaz'
+            backendAzureRmContainerName: 'tfstatefiles1'
+            backendAzureRmKey: 'aks-demo-one'
+            allowTelemetryCollection: false
 
       - task: TerraformCLI@0
         displayName: Terraform Validate
@@ -78,35 +80,36 @@ stages:
               name: sshkey
               inputs:
                 secureFile: 'aks-terraform-devops-ssh-key-ububtu.pub'
-            - task: TerraformTaskV4@4
+            - task: TerraformCLI@0
+              displayName: Terraform Init
               inputs:
-                provider: 'azurerm'
                 command: 'init'
                 workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
+                backendType: 'azurerm'
                 backendServiceArm: 'terraform-aks-azurerm-svc-con'
-                backendAzureRmResourceGroupName: 'terraform-storage-rg'
-                backendAzureRmStorageAccountName: 'terraformstatestoragevvk'
-                backendAzureRmContainerName: 'tfstatefiles'
+                backendAzureRmResourceGroupName: 'Capstonedemoniaz1'
+                backendAzureRmStorageAccountName: 'tstatestorageniaz'
+                backendAzureRmContainerName: 'tfstatefiles1'
                 backendAzureRmKey: 'aks-$(DEV_ENVIRONMENT).tfstate'
                 allowTelemetryCollection: false
 
-            - task: TerraformTaskV4@4
+            - task: TerraformCLI@0
+              displayName: Terraform Plan
               inputs:
-                provider: 'azurerm'
                 command: 'plan'
                 workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                environmentServiceNameAzureRM: 'terraform-aks-azurerm-svc-con'
+                environmentServiceName: 'terraform-aks-azurerm-svc-con'
                 commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath) -var environment=$(DEV_ENVIRONMENT) -out $(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
                 allowTelemetryCollection: false
             
-            - task: TerraformTaskV4@4
+            - task: TerraformCLI@0
+              displayName: Terraform Apply
               inputs:
-                provider: 'azurerm'
                 command: 'apply'
                 workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                environmentServiceNameAzureRM: 'terraform-aks-azurerm-svc-con'
+                environmentServiceName: 'terraform-aks-azurerm-svc-con'
                 commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
-                allowTelemetryCollection: false
+                allowTelemetryCollection: false 
 
 - stage: Build
   displayName: Build and push stage
@@ -116,7 +119,7 @@ stages:
     steps:
     - task: Docker@2
       inputs:
-        containerRegistry: 'acr-docker-svc-con'
+        containerRegistry: 'ACRserviceprinciplenew'
         repository: 'nextjs-app1'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
