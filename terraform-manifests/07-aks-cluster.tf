@@ -19,13 +19,13 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     type           = "VirtualMachineScaleSets"
     node_labels = {
       "nodepool-type" = "system"
-      "environment"   = var.environment
+      # "environment"   = var.environment
       "nodepoolos"    = "linux"
       "app"           = "system-apps"
     }
     tags = {
       "nodepool-type" = "system"
-      "environment"   = var.environment
+      # "environment"   = var.environment
       "nodepoolos"    = "linux"
       "app"           = "system-apps"
     }    
@@ -72,10 +72,10 @@ network_profile {
   network_plugin = "azure"
 }
 
-# AKS Cluster Tags 
-tags = {
-  Environment = var.environment
-}
+ # AKS Cluster Tags 
+# tags = {
+#   Environment = var.environment
+# }
 
 
 }
